@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+"""
+Created on Fri Feb 10 21:18:08 2021
+
+@author: RIPLECS
+"""
 
 import math
 import pandas as pd
