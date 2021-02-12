@@ -6,9 +6,19 @@ Created on Fri Feb 12 11:20:29 2021
 """
 
 cipher_text=open('2.txt', 'r', encoding='UTF-8')
-text=''
+textt=''
 for line in cipher_text:
-    text=text+line
+    textt=textt+line
+    
+def cleaning(text):
+    sign=" .,&!?/\|#@-—()[]–{};:…%«»\n'1234567890jvi"
+    for i in sign:
+        if i in text:
+            text=text.replace(i, '')
+    return text.replace('"', '')
+
+text=cleaning(textt.lower())
+print(textt)
 print(text)
 
 a=ord('а')
