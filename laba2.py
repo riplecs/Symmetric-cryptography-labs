@@ -5,20 +5,16 @@ Created on Fri Feb 12 11:20:29 2021
 @author: RIPLECS
 """
 
-cipher_text=open('2.txt', 'r', encoding='UTF-8')
+from laba1 import cleaning
+
+
+cipher_text=open('катерина.txt', 'r', encoding='UTF-8')
 textt=''
 for line in cipher_text:
     textt=textt+line
     
-def cleaning(text):
-    sign=" .,&!?/\|#@-—()[]–{};:…%«»\n'1234567890jvi"
-    for i in sign:
-        if i in text:
-            text=text.replace(i, '')
-    return text.replace('"', '')
 
 text=cleaning(textt.lower())
-print(textt)
 print(text)
 
 a=ord('а')
@@ -62,5 +58,37 @@ def Vigenere(r, text):
         fin=fin+res[i]
     return fin
 
-r=input('Введите ключ: ')
-print(convert(Vigenere(r, text)))
+
+def conformity(text):
+    n=len(text)
+    res=0
+    for i in range(len(alph)):
+        res=res+text.count(alph[i])*(text.count(alph[i])-1)
+    return res/(n*(n-1))
+
+r2='ад'
+#print(f'r = {r2}\n', convert(Vigenere(r2, text)))
+r3='рай'
+#print(f'r = {r3}\n', convert(Vigenere(r3, text)))
+r4='свет'
+#print(f'r = {r4}\n', convert(Vigenere(r4, text)))
+r5='жизнь'
+print(f'r = {r5}\n', convert(Vigenere(r5, text)))
+r13='темноецарство'
+#print(f'r = {r13}\n', convert(Vigenere(r13, text)))
+r24='лучиксветавтемномцарстве'
+#print(f'r = {r24}\n', convert(Vigenere(r24, text)))
+
+
+#print('I_r2 = ', conformity(convert(Vigenere(r2, text))))
+#print('I_r3 = ', conformity(convert(Vigenere(r3, text))))
+#print('I_r4 = ', conformity(convert(Vigenere(r4, text))))
+#print('I_r5 = ', conformity(convert(Vigenere(r5, text))))
+#print('I_r13 = ', conformity(convert(Vigenere(r13, text))))
+#print('I_r24 = ', conformity(convert(Vigenere(r24, text))))
+
+
+##################################################################
+def Kronecker(a, b):
+    if a==b: return 1
+    else: return 0
