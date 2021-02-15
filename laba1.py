@@ -20,7 +20,7 @@ cipher_text=cipher_text.lower()
 
 
 def cleaning(text):
-    sign=" .,&!?/\|#@-—()[]{}\n'"
+    sign=" .,&!?/\|#@-—()[]–{};:…%«»\n'1234567890jvi"
     for i in sign:
         if i in text:
             text=text.replace(i, '')
@@ -47,7 +47,7 @@ freq_l=[]
 for i in range(len(alp)):
     freq_l.append(frequency(alp[i], cipher_text))
 df=pd.DataFrame({'Літера': [i for i in alp] ,'Частота': [i for i in freq_l]})
-print(df.sort_values(by='Частота', ignore_index=True, ascending=False))
+print(df.sort_values(by='Частота', ignore_index=True, ascending=False).set_index('Літера'))
 
 
 def bigrams_intersect(text):
@@ -70,24 +70,6 @@ def bigrams_not_intersect(text):
 bi_in=bigrams_intersect(cipher_text)
 bi_not_in=bigrams_not_intersect(cipher_text)
 
-
-
-print('    Частоти усіх біграм: ')
-freq_b=[]
-for i in range(len(bi_in)):
-    freq_b.append(frequency(bi_in[i], cipher_text))
-df=pd.DataFrame({'Біграма': [i for i in bi_in], 'Частота': [i for i in freq_b]})
-print(df.sort_values(by='Частота', ignore_index=True, ascending=False))
-
-
-print('    Частоти біграм, що не перетинаются: ')
-freq_b_n=[]
-for i in range(len(bi_not_in)):
-    freq_b_n.append(frequency(bi_not_in[i], cipher_text))
-df=pd.DataFrame({'Біграма': [i for i in bi_not_in], 'Частота': [i for i in freq_b_n]})
-print(df.sort_values(by='Частота', ignore_index=True, ascending=False))
-    
-    
 def entropy(n, text):
     res=0
     if n==1:
@@ -99,6 +81,34 @@ def entropy(n, text):
         res=res/n
     return res 
 
+if __name__=='__main__':
+    print('Частоти літер: ')
+    freq_l=[]
+    for i in range(len(alp)):
+        freq_l.append(frequency(alp[i], cipher_text))
+    df=pd.DataFrame({'Літера': [i for i in alp] ,'Частота': [i for i in freq_l]})
+    print(df.sort_values(by='Частота', ignore_index=True, ascending=False).set_index('Літера'))
+    
+    print('Частоти усіх біграм: ')
+    freq_b=[]
+    for i in range(len(bi_in)):
+        freq_b.append(frequency(bi_in[i], cipher_text))
+    df=pd.DataFrame({'Біграма': [i for i in bi_in], 'Частота': [i for i in freq_b]})
+    print(df.sort_values(by='Частота', ignore_index=True, ascending=False).set_index('Біграма'))
 
-print(f'Питома ентропія на символ: ', entropy(1, cipher_text))
-print(f'Питома ентропія на символ біграми:  ', entropy(2, cipher_text))
+
+    print('Частоти біграм, що не перетинаются: ')
+    freq_b_n=[]
+    for i in range(len(bi_not_in)):
+        freq_b_n.append(frequency(bi_not_in[i], cipher_text))
+    df=pd.DataFrame({'Біграма': [i for i in bi_not_in], 'Частота': [i for i in freq_b_n]})
+    print(df.sort_values(by='Частота', ignore_index=True, ascending=False).set_index('Біграма'))
+    
+    
+
+    print(f'Питома ентропія на символ: ', entropy(1, cipher_text))
+    print(f'Питома ентропія на символ біграми:  ', entropy(2, cipher_text))
+
+    H_0=math.log2(len(alp))
+    H=(1.248+1.761)/2
+    print('Надлишковість російської мови R = ', 1-H/H_0)
