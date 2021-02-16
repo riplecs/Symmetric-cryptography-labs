@@ -12,13 +12,6 @@ import pandas as pd
 pd.set_option('display.max_rows', 100)
 
 
-cipher_text_0=open('textee.txt', 'r', encoding='UTF-8')
-cipher_text=''
-for line in cipher_text_0:
-    cipher_text=cipher_text+line
-cipher_text=cipher_text.lower()
-
-
 def cleaning(text):
     sign=" .,&!?/\|#@-—()[]–{};:…%«»\n'1234567890jvi"
     for i in sign:
@@ -27,9 +20,6 @@ def cleaning(text):
     return text.replace('"', '')
 
 
-cipher_text=cleaning(cipher_text)
-#print(cipher_text) 
-
 def alphabet(text):
     abc=[]
     for i in range(len(text)):
@@ -37,17 +27,9 @@ def alphabet(text):
             abc.append(text[i])
     return abc
 
-alp=alphabet(cipher_text)
 
 def frequency(a, text):
     return text.count(a)/len(text)
-
-print('    Частоти літер: ')
-freq_l=[]
-for i in range(len(alp)):
-    freq_l.append(frequency(alp[i], cipher_text))
-df=pd.DataFrame({'Літера': [i for i in alp] ,'Частота': [i for i in freq_l]})
-print(df.sort_values(by='Частота', ignore_index=True, ascending=False).set_index('Літера'))
 
 
 def bigrams_intersect(text):
@@ -67,9 +49,6 @@ def bigrams_not_intersect(text):
     return res
 
 
-bi_in=bigrams_intersect(cipher_text)
-bi_not_in=bigrams_not_intersect(cipher_text)
-
 def entropy(n, text):
     res=0
     if n==1:
@@ -82,11 +61,25 @@ def entropy(n, text):
     return res 
 
 if __name__=='__main__':
+    
+    cipher_text_0=open('textee.txt', 'r', encoding='UTF-8')
+    cipher_text=''
+    for line in cipher_text_0:
+        cipher_text=cipher_text+line
+    cipher_text=cipher_text.lower()
+    cipher_text=cleaning(cipher_text)
+    
+    alp=alphabet(cipher_text)
+    
+    bi_in=bigrams_intersect(cipher_text)
+    bi_not_in=bigrams_not_intersect(cipher_text)
+    
     print('Частоти літер: ')
     freq_l=[]
     for i in range(len(alp)):
         freq_l.append(frequency(alp[i], cipher_text))
     df=pd.DataFrame({'Літера': [i for i in alp] ,'Частота': [i for i in freq_l]})
+    df.to_csv('frequency.csv', encoding='UTF-8', index=False)
     print(df.sort_values(by='Частота', ignore_index=True, ascending=False).set_index('Літера'))
     
     print('Частоти усіх біграм: ')
@@ -104,11 +97,7 @@ if __name__=='__main__':
     df=pd.DataFrame({'Біграма': [i for i in bi_not_in], 'Частота': [i for i in freq_b_n]})
     print(df.sort_values(by='Частота', ignore_index=True, ascending=False).set_index('Біграма'))
     
-    
 
     print(f'Питома ентропія на символ: ', entropy(1, cipher_text))
     print(f'Питома ентропія на символ біграми:  ', entropy(2, cipher_text))
 
-    H_0=math.log2(len(alp))
-    H=(1.248+1.761)/2
-    print('Надлишковість російської мови R = ', 1-H/H_0)
