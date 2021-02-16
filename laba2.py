@@ -6,7 +6,9 @@ Created on Fri Feb 12 11:20:29 2021
 """
 
 from laba1 import cleaning
-
+from collections import Counter
+import math
+import pandas as pd
 
 cipher_text=open('катерина.txt', 'r', encoding='UTF-8')
 textt=''
@@ -92,3 +94,39 @@ r24='лучиксветавтемномцарстве'
 def Kronecker(a, b):
     if a==b: return 1
     else: return 0
+    
+def statistics(text):
+    d=[0, 0]
+    r=2
+    while r<30:
+        el=0
+        for j in range(1, len(text)-r):
+            el=el+Kronecker(text[j], text[j+r])
+        d.append(el)
+        r=r+1
+    res=[]
+    print(d)
+    for i in sorted(d)[-2:]:
+        res.append(d.index(i))
+    return res 
+
+def split_text(text, key):
+    res=key*[0]
+    for i in range(key):
+        res[i]=[''.join(j for j in text[i:len(text):key])]
+    return res
+    
+
+def max_count(mas):
+    res=[]
+    for i in mas:
+        res.append(Counter(''.join(i)).most_common(1).pop(0)[0])
+    return res
+
+print(max_count(split_text(text, 13)))
+x='т'
+def find_key(length, mas):
+    res=[]
+    for i in mas:
+        res.append((alph.index(i)+alph.index(x))%m)
+    return res
