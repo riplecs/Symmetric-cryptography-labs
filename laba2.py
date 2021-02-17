@@ -9,20 +9,6 @@ from laba1 import cleaning
 from collections import Counter
 import pandas as pd
 
-cipher_text=open('катерина.txt', 'r', encoding='UTF-8')
-textt=''
-for line in cipher_text:
-    textt=textt+line
-    
-
-text=cleaning(textt.lower())
-print(text)
-
-a=ord('а')
-alph=''.join(chr(i) for i in range(a, a+32))
-#alph='абвгдежзийклмнопрстуфхцчшщъыьэюя'
-m=len(alph)
-
 def numerate(string):
     chars=[]
     for i in string:
@@ -34,7 +20,6 @@ def convert(string):
     for i in string:
         res.append(alph[int(i)])
     return ''.join(res)
-        
 
 def parcer(obj, n):
     args = [iter(obj)] * n
@@ -67,41 +52,6 @@ def conformity(text):
         res=res+text.count(alph[i])*(text.count(alph[i])-1)
     return res/(n*(n-1))
 
-r2='ад'
-#print(f'r = {r2}\n', convert(Vigenere(r2, text)))
-r3='рай'
-#print(f'r = {r3}\n', convert(Vigenere(r3, text)))
-r4='свет'
-#print(f'r = {r4}\n', convert(Vigenere(r4, text)))
-r5='жизнь'
-print(f'r = {r5}\n', convert(Vigenere(r5, text)))
-r13='темноецарство'
-#print(f'r = {r13}\n', convert(Vigenere(r13, text)))
-r24='лучиксветавтемномцарстве'
-#print(f'r = {r24}\n', convert(Vigenere(r24, text)))
-
-keys=[r2, r3, r4, r5, r13, r24]
-for r in keys:
-    file.write(r + '\n' + convert(Vigenere(r, text)) + '\n')
-file.close() 
-
-#print('I_r2 = ', conformity(convert(Vigenere(r2, text))))
-#print('I_r3 = ', conformity(convert(Vigenere(r3, text))))
-#print('I_r4 = ', conformity(convert(Vigenere(r4, text))))
-#print('I_r5 = ', conformity(convert(Vigenere(r5, text))))
-#print('I_r13 = ', conformity(convert(Vigenere(r13, text))))
-#print('I_r24 = ', conformity(convert(Vigenere(r24, text))))
-
-
-
-##################################################################
-
-decipher_text=open('вар9.txt', 'r', encoding='UTF-8')
-text=''
-for line in decipher_text:
-    text=text+line
-text=cleaning(text)
-print(text)
 
 def Kronecker(a, b):
     if a==b: return 1
@@ -127,10 +77,6 @@ def split_text(text, key):
         res[i]=[''.join(j for j in text[i:len(text):key])]
     return res
 
-length=statistics(text)
-print(length)
-k=length[1]
-
 def split_text(text, key):
     res=key*[0]
     for i in range(key):
@@ -142,19 +88,6 @@ def max_count(mas):
     for i in mas:
         res.append(Counter(''.join(i)).most_common(1).pop(0)[0])
     return res
-
-print(max_count(split_text(text, 13)))
-x='т'
-def find_key(length, mas):
-    res=[]
-    for i in mas:
-        res.append((alph.index(i)+alph.index(x))%m)
-    return res
-
-r=convert(find_key(max_count(split_text(text, k))))
-print('key = ', r)
-
-df=pd.read_csv('frequency.csv', delimiter=',', encoding='UTF-8')
 
 def find_key_1(text):
     res=[]
@@ -178,9 +111,6 @@ def find_key_1(text):
                 fin.append(convert([i[k][1]-1]))
     return ''.join(fin)
 
-key=find_key_1(split_text(text, k))
-print('key = ', key)
-
 def deVigenere(r, text):
     if len(text)%len(r)==0:
         for i in range(0, len(text), len(r)):
@@ -199,10 +129,68 @@ def deVigenere(r, text):
     for i in range(len(res)): fin=fin+res[i]
     return fin
 
-print(convert(deVigenere(key, text)))
+if __name__=='__main__':
+    
+    cipher_text=open('катерина.txt', 'r', encoding='UTF-8')
+    textt=''
+    for line in cipher_text:
+        textt=textt+line
+    
+    text=cleaning(textt.lower())
+    print(text)
 
-print(convert(deVigenere(key, text)))
-f=open('вар9_дешифр.txt', 'w', encoding='UTF-8')
-f.write(key + '\n' + convert(deVigenere(key, text)))
-f.close()
+    a=ord('а')
+    alph=''.join(chr(i) for i in range(a, a+32))
+    #alph='абвгдежзийклмнопрстуфхцчшщъыьэюя'
+    m=len(alph)
+
+    r2='ад'
+    print(f'r = {r2}\n', convert(Vigenere(r2, text)))
+    r3='рай'
+    print(f'r = {r3}\n', convert(Vigenere(r3, text)))
+    r4='свет'
+    print(f'r = {r4}\n', convert(Vigenere(r4, text)))
+    r5='жизнь'
+    print(f'r = {r5}\n', convert(Vigenere(r5, text)))
+    r13='темноецарство'
+    print(f'r = {r13}\n', convert(Vigenere(r13, text)))
+    r24='лучиксветавтемномцарстве'
+    print(f'r = {r24}\n', convert(Vigenere(r24, text)))
+    file=open('катерина_шифр.txt', 'w', encoding='UTF-8')
+
+    keys=[r2, r3, r4, r5, r13, r24]
+    for r in keys:
+        file.write(r + '\n' + convert(Vigenere(r, text)) + '\n')
+    file.close() 
+
+    print('I_r2 = ', conformity(convert(Vigenere(r2, text))))
+    print('I_r3 = ', conformity(convert(Vigenere(r3, text))))
+    print('I_r4 = ', conformity(convert(Vigenere(r4, text))))
+    print('I_r5 = ', conformity(convert(Vigenere(r5, text))))
+    print('I_r13 = ', conformity(convert(Vigenere(r13, text))))
+    print('I_r24 = ', conformity(convert(Vigenere(r24, text))))
+
+    decipher_text=open('вар9.txt', 'r', encoding='UTF-8')
+    text=''
+    for line in decipher_text:
+        text=text+line
+    text=cleaning(text)
+    print(text)
+    
+    length=statistics(text)
+    print(length)
+    k=length[1]
+    
+    r=convert(find_key(max_count(split_text(text, k))))
+    print('key = ', r)
+
+    df=pd.read_csv('frequency_letters.csv', delimiter=',', encoding='UTF-8')
+    
+    key=find_key_1(split_text(text, k))
+    print('key = ', key)
+    
+    print(convert(deVigenere(key, text)))
+    f=open('вар9_дешифр.txt', 'w', encoding='UTF-8')
+    f.write(key + '\n' + convert(deVigenere(key, text)))
+    f.close()
 
