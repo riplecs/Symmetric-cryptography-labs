@@ -39,6 +39,7 @@ def bigrams_intersect(text):
             res.append(text[i]+text[i+1])
     return res
 
+
 def bigrams_not_intersect(text):
     res=[]
     i=0
@@ -59,6 +60,7 @@ def entropy(n, text):
             res=res-freq_b[i]*math.log2(freq_b[i])
         res=res/n
     return res 
+
 
 if __name__=='__main__':
     
@@ -87,6 +89,7 @@ if __name__=='__main__':
     for i in range(len(bi_in)):
         freq_b.append(frequency(bi_in[i], cipher_text))
     df=pd.DataFrame({'Біграма': [i for i in bi_in], 'Частота': [i for i in freq_b]})
+    df.to_csv('frequency_cross_bigramms.csv', encoding='UTF-8', index=False)
     print(df.sort_values(by='Частота', ignore_index=True, ascending=False).set_index('Біграма'))
 
 
@@ -95,9 +98,16 @@ if __name__=='__main__':
     for i in range(len(bi_not_in)):
         freq_b_n.append(frequency(bi_not_in[i], cipher_text))
     df=pd.DataFrame({'Біграма': [i for i in bi_not_in], 'Частота': [i for i in freq_b_n]})
+    df.to_csv('frequency_noncross_bigramms.csv', encoding='UTF-8', index=False)
     print(df.sort_values(by='Частота', ignore_index=True, ascending=False).set_index('Біграма'))
     
 
     print(f'Питома ентропія на символ: ', entropy(1, cipher_text))
     print(f'Питома ентропія на символ біграми:  ', entropy(2, cipher_text))
-
+        H_0=math.log2(len(alp))
+    H_10=(1.9571012893219+2.68527943900685)/2
+    H_20=(1.28396862434949+1.98664532347824)/2
+    H_30=(1.24794818862794+1.76056922372768)/2
+    print('Надлишковість російської мови R(H_10) = ', 1-H_10/H_0)
+    print('Надлишковість російської мови R(H_20) = ', 1-H_20/H_0)
+    print('Надлишковість російської мови R(H_30) = ', 1-H_30/H_0)
