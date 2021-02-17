@@ -80,6 +80,10 @@ r13='темноецарство'
 r24='лучиксветавтемномцарстве'
 #print(f'r = {r24}\n', convert(Vigenere(r24, text)))
 
+keys=[r2, r3, r4, r5, r13, r24]
+for r in keys:
+    file.write(r + '\n' + convert(Vigenere(r, text)) + '\n')
+file.close() 
 
 #print('I_r2 = ', conformity(convert(Vigenere(r2, text))))
 #print('I_r3 = ', conformity(convert(Vigenere(r3, text))))
@@ -87,6 +91,7 @@ r24='лучиксветавтемномцарстве'
 #print('I_r5 = ', conformity(convert(Vigenere(r5, text))))
 #print('I_r13 = ', conformity(convert(Vigenere(r13, text))))
 #print('I_r24 = ', conformity(convert(Vigenere(r24, text))))
+
 
 
 ##################################################################
@@ -195,3 +200,9 @@ def deVigenere(r, text):
     return fin
 
 print(convert(deVigenere(key, text)))
+
+print(convert(deVigenere(key, text)))
+f=open('вар9_дешифр.txt', 'w', encoding='UTF-8')
+f.write(key + '\n' + convert(deVigenere(key, text)))
+f.close()
+
