@@ -7,7 +7,6 @@ Created on Fri Feb 12 11:20:29 2021
 
 from laba1 import cleaning
 from collections import Counter
-import math
 import pandas as pd
 
 cipher_text=open('катерина.txt', 'r', encoding='UTF-8')
@@ -91,6 +90,14 @@ r24='лучиксветавтемномцарстве'
 
 
 ##################################################################
+
+decipher_text=open('вар9.txt', 'r', encoding='UTF-8')
+text=''
+for line in decipher_text:
+    text=text+line
+text=cleaning(text)
+print(text)
+
 def Kronecker(a, b):
     if a==b: return 1
     else: return 0
@@ -105,7 +112,6 @@ def statistics(text):
         d.append(el)
         r=r+1
     res=[]
-    print(d)
     for i in sorted(d)[-2:]:
         res.append(d.index(i))
     return res 
@@ -115,7 +121,16 @@ def split_text(text, key):
     for i in range(key):
         res[i]=[''.join(j for j in text[i:len(text):key])]
     return res
-    
+
+length=statistics(text)
+print(length)
+k=length[1]
+
+def split_text(text, key):
+    res=key*[0]
+    for i in range(key):
+        res[i]=[''.join(j for j in text[i:len(text):key])]
+    return res
 
 def max_count(mas):
     res=[]
@@ -130,3 +145,53 @@ def find_key(length, mas):
     for i in mas:
         res.append((alph.index(i)+alph.index(x))%m)
     return res
+
+r=convert(find_key(max_count(split_text(text, k))))
+print('key = ', r)
+
+df=pd.read_csv('frequency.csv', delimiter=',', encoding='UTF-8')
+
+def find_key_1(text):
+    res=[]
+    for i in range(len(text)):
+        txt=''.join(text[i])
+        g=0
+        while g<m:
+            el=0
+            for t in range(0, m):
+                el=el+txt.count(convert([(t+g)%m]))*float(df[df['Літера']==f'{convert([t])}']['Частота'])
+            g=g+1
+            res.append([i, g, el])
+    result=[res[i:i+m] for i in range(0, len(res), m)]
+    res=[]
+    for i in result:
+        res.append(max(i[k][2] for k in range(m)))
+    fin=[]
+    for i in result:
+        for k in range(m):
+            if i[k][2] in res:
+                fin.append(convert([i[k][1]-1]))
+    return ''.join(fin)
+
+key=find_key_1(split_text(text, k))
+print('key = ', key)
+
+def deVigenere(r, text):
+    if len(text)%len(r)==0:
+        for i in range(0, len(text), len(r)):
+            mas=[''.join(j) for j in parcer(text, len(r))]
+    else: 
+        mas=[''.join(j) for j in parcer(text, len(r))]
+        mas.append(text[(len(text)-len(text)%len(r)):])
+    res=[]
+    for i in mas: res.append(numerate(i))
+    for j in res:
+        k=0
+        while k<len(j):
+            j[k]=(j[k]-(numerate(r))[k])%m
+            k=k+1
+    fin=[]
+    for i in range(len(res)): fin=fin+res[i]
+    return fin
+
+print(convert(deVigenere(key, text)))
