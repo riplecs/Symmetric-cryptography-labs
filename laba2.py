@@ -77,16 +77,17 @@ def split_text(text, key):
         res[i]=[''.join(j for j in text[i:len(text):key])]
     return res
 
-def split_text(text, key):
-    res=key*[0]
-    for i in range(key):
-        res[i]=[''.join(j for j in text[i:len(text):key])]
-    return res
-
 def max_count(mas):
     res=[]
     for i in mas:
         res.append(Counter(''.join(i)).most_common(1).pop(0)[0])
+    return res
+
+x='о'
+def find_key(mas):
+    res=[]
+    for i in mas:
+        res.append((alph.index(i)-alph.index(x))%m)
     return res
 
 def find_key_1(text):
