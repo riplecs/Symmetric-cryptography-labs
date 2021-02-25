@@ -69,7 +69,14 @@ def statistics(text):
     res=[]
     for i in sorted(d)[-2:]:
         res.append(d.index(i))
-    return res 
+    for i in range(len(res)):
+        k=len(res)
+        if np.gcd(res[i], res[(i+1)%k])==np.gcd(res[i], res[(i+2)%k])==1:
+            del res[i]
+        else: 
+            return np.min(res)
+            break
+    return np.min(res)
 
 def split_text(text, key):
     res=key*[0]
@@ -98,7 +105,9 @@ def find_key_1(text):
         while g<m:
             el=0
             for t in range(0, m):
-                el=el+txt.count(convert([(t+g)%m]))*float(df[df['Літера']==f'{convert([t])}']['Частота'])
+                l=convert([(t+g)%m])
+                fr=float(df[df['Літера']==f'{convert([t])}']['Частота'])
+                el=el+txt.count(l)*fr
             g=g+1
             res.append([i, g, el])
     result=[res[i:i+m] for i in range(0, len(res), m)]
@@ -179,8 +188,7 @@ if __name__=='__main__':
     print(text)
     
     length=statistics(text)
-    print(length)
-    k=length[1]
+    k=length
     
     r=convert(find_key(max_count(split_text(text, k))))
     print('key = ', r)
