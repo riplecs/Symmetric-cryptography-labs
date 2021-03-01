@@ -14,8 +14,6 @@ def inverted(a, n):
     else: d, u, v = inverted(n, a%n)
     return  d, v, u -int(a/n)*v
 
-print('inverted = ',  inverted(29, 33)[1]%33)
-
 def congruence(a, b, n):
     d=inverted(a, n)[0]
     if d==1:
@@ -31,7 +29,7 @@ def congruence(a, b, n):
         for i in range(d):
             res.append(x+i*n)
         return res
-print('3x=3mod9;  x = ', congruence(3, 3, 9))
+
 
 file=open('V9.txt', 'r', encoding='UTF-8')
 ciphertext=''
