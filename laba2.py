@@ -59,15 +59,21 @@ def Kronecker(a, b):
     
 def statistics(text):
     d=[0, 0]
-    r=2
-    while r<30:
+    for r in range(2, 40):
         el=0
         for j in range(1, len(text)-r):
             el=el+Kronecker(text[j], text[j+r])
         d.append(el)
-        r=r+1
+    df=pd.DataFrame({'Ключ': [i for i in range(2, 40)],
+                     'Статистика збігів': [j for j in d[2:]]})
+    print(df.set_index('Ключ'))
+    fig, ax = plt.subplots()
+    ax.plot([i for i in range(2, 40)], d[2:])
+    ax.set_xlabel('Ключ')
+    ax.set_ylabel('Статистика збігів')
+    plt.show()
     res=[]
-    for i in sorted(d)[-2:]:
+    for i in sorted(d)[-3:]:
         res.append(d.index(i))
     for i in range(len(res)):
         k=len(res)
@@ -179,7 +185,21 @@ if __name__=='__main__':
     print('I_r5 = ', conformity(convert(Vigenere(r5, text))))
     print('I_r13 = ', conformity(convert(Vigenere(r13, text))))
     print('I_r24 = ', conformity(convert(Vigenere(r24, text))))
-
+    
+    X=[len(i) for i in keys]
+    Y=[conformity(convert(Vigenere(j, text))) for j in keys]
+    fig, ax = plt.subplots()
+    ax.plot(X, Y, marker='o')
+    fig.size=(8, 4)
+    ax.set_xlabel('Ключ')
+    ax.set_ylabel('Індекс відповідності')
+    ax.grid(True)
+    plt.show()
+    
+    df=pd.DataFrame({'Ключ':[i for i in X],
+                'Індекс відповідності':[j for j in Y]})
+    print(df.set_index('Ключ'))
+    
     decipher_text=open('вар9.txt', 'r', encoding='UTF-8')
     text=''
     for line in decipher_text:
