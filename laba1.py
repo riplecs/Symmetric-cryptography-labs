@@ -19,7 +19,22 @@ def cleaning(text):
             text=text.replace(i, '')
     return text.replace('"', '')
 
+ def all_possible_bi(alp):
+        mas=[]
+        for i in alph:
+            for j in alph:
+                if f'{i}{j}'not in mas:
+                    mas.append(f'{i}{j}')
+        return mas
 
+   def make_frame(frame):
+        for i in range(len(frame)):
+            for j in alph:
+                if frame[f'{j}'][i] in list(dff['Біграма']):
+                    frame[f'{j}'][i]=float(dff['Частота'][dff['Біграма']==frame[f'{j}'][i]])
+                else: frame[f'{j}'][i]=0
+        return frame
+    
 def alphabet(text):
     abc=[]
     for i in range(len(text)):
@@ -138,23 +153,9 @@ if __name__=='__main__':
     pd.set_option('display.max_rows', 841)
     pd.set_option('display.max_columns', 33)
     
-    def all_possible_bi(alp):
-        mas=[]
-        for i in alph:
-            for j in alph:
-                if f'{i}{j}'not in mas:
-                    mas.append(f'{i}{j}')
-        return mas
     
     df=pd.DataFrame({f'{i}':[k for k in all_possible_bi(alph) if k[1]==f'{i}' ] for i in alph})
     
-    def make_frame(frame):
-        for i in range(len(frame)):
-            for j in alph:
-                if frame[f'{j}'][i] in list(dff['Біграма']):
-                    frame[f'{j}'][i]=float(dff['Частота'][dff['Біграма']==frame[f'{j}'][i]])
-                else: frame[f'{j}'][i]=0
-        return frame
     
     df=make_frame(df)
     df['1|2']=pd.Series(i for i in alph)
