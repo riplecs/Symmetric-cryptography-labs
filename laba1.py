@@ -127,3 +127,66 @@ if __name__=='__main__':
     print('Надлишковість російської мови R(H_10) = ', 1-H_10/H_0)
     print('Надлишковість російської мови R(H_20) = ', 1-H_20/H_0)
     print('Надлишковість російської мови R(H_30) = ', 1-H_30/H_0)
+    
+    ########################################################
+    #лучше запускать tables_with_frequencies_lab1.ipynb
+    
+    print('ГАРНІ ТАБЛИЦІ')
+    dff=pd.read_csv('frequency_cross_bigramms.csv', delimiter=',', encoding='UTF-8')
+    dff=dff.sort_values(by='Частота', ascending=False)
+    alph=' абвгдежзийклмнопрстуфхцчшщыьэюя'
+    pd.set_option('display.max_rows', 841)
+    pd.set_option('display.max_columns', 33)
+    
+    def all_possible_bi(alp):
+        mas=[]
+        for i in alph:
+            for j in alph:
+                if f'{i}{j}'not in mas:
+                    mas.append(f'{i}{j}')
+        return mas
+    
+    df=pd.DataFrame({f'{i}':[k for k in all_possible_bi(alph) if k[1]==f'{i}' ] for i in alph})
+    
+    def make_frame(frame):
+        for i in range(len(frame)):
+            for j in alph:
+                if frame[f'{j}'][i] in list(dff['Біграма']):
+                    frame[f'{j}'][i]=float(dff['Частота'][dff['Біграма']==frame[f'{j}'][i]])
+                else: frame[f'{j}'][i]=0
+        return frame
+    
+    df=make_frame(df)
+    df['1|2']=pd.Series(i for i in alph)
+    df=df.set_index('1|2')
+    print('Біграми, що перетинаються: ')
+    print(df)
+    
+    dff=pd.read_csv('frequency_noncross_bigramms.csv', delimiter=',', encoding='UTF-8')
+    dff=dff.sort_values(by='Частота', ascending=False)
+    df=pd.DataFrame({f'{i}':[k for k in all_possible_bi(alph) if k[1]==f'{i}' ] for i in alph})
+    df=make_frame(df)
+    df['1|2']=pd.Series(i for i in alph)
+    df=df.set_index('1|2')
+    print('Біграми, що не перетинаються: ')
+    print(df)
+    
+    dff=pd.read_csv('frequencycrossbigramms.csv', delimiter=',', encoding='UTF-8')
+    dff=dff.sort_values(by='Частота', ascending=False)
+    alph='абвгдежзийклмнопрстуфхцчшщыьэюя'
+    
+    df=pd.DataFrame({f'{i}':[k for k in all_possible_bi(alph) if k[1]==f'{i}' ] for i in alph})
+    df=make_frame(df)
+    df['1|2']=pd.Series(i for i in alph)
+    df=df.set_index('1|2')
+    print('Біграми, що перетинаються: ')
+    print(df)
+    
+    dff=pd.read_csv('frequencynoncrossbigramms.csv', delimiter=',', encoding='UTF-8')
+    dff=dff.sort_values(by='Частота', ascending=False)
+    df=pd.DataFrame({f'{i}':[k for k in all_possible_bi(alph) if k[1]==f'{i}' ] for i in alph})
+    df=make_frame(df)
+    df['1|2']=pd.Series(i for i in alph)
+    df=df.set_index('1|2')
+    print('Біграми, що не перетинаються: ')
+    print(df)
