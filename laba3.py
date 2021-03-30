@@ -34,25 +34,6 @@ def congruence(a, b, n):
             res.append(x+i*n)
         return res
 
-
-file=open('V9.txt', 'r', encoding='UTF-8')
-ciphertext=''
-ciphertext=cleaning(''.join(line for line in file))
-ciphertext=ciphertext.replace(' ', '')
-bigrams=bigrams_not_intersect(ciphertext)
-freqs=[]
-for i in bigrams:
-    freqs.append(frequency(i, len(ciphertext)/2, ciphertext))
-    
-print('Біграми шифротексту: ')
-df=pd.DataFrame({'Біграма' :[i for i in bigrams_not_intersect(ciphertext)], 'Частота': [j for j in freqs]})
-print(df.sort_values(by='Частота', ascending = False, ignore_index=True)[0:5].set_index('Біграма'))
-print('Біграми російскьої мови: ')
-dfr=pd.read_csv('frequencynoncrossbigramms.csv', delimiter=',', encoding='UTF-8')
-print(dfr[0:5]. set_index('Біграма'))
-alph='абвгдежзийклмнопрстуфхцчшщыьэюя'
-m=len(alph)
- 
 def convert_bigram(bi):
     return (alph.index(bi[0])*m+alph.index(bi[1]))%(m**2)
 
@@ -72,6 +53,107 @@ def deconvert_text(mas):
     for i in range(len(mas)):
         res.append(deconvert_bigram(mas[i]))
     return ''.join(i for i in res)
+
+
+'''
+forbiden=['аь', 'оь', 'уь', 'кь', 'хь', 'оы', 'еь', 'ьы']
+
+def check_text(t):
+    c=0
+    for i in forbiden:
+        if t.find(i)==-1:
+            c=c+1
+    if c==len(forbiden): 
+        if t.count('ф')/len(t)<0.0025:
+            return True
+        else:
+            return False 
+    else:
+        return False
+'''
+
+def check_text(t):
+    n=len(t)
+    if t.count('ф')/n<0.004:
+        return True
+    else:
+        return False 
+def affin_bigramms():
+    result=open('result.txt', 'w')
+    keys=[]
+    triger=False
+    for i in range(0, 5):
+        for j in range(0, 5):
+            for k in range(0, 5):
+                for l in range(0, 5):
+                    if i==k or j==l:
+                        continue
+                    if triger is True:
+                        break
+                    x1=convert_bigram(dfr['Біграма'][i])
+                    y1=convert_bigram(df['Біграма'][j])
+                    x2=convert_bigram(dfr['Біграма'][k])
+                    y2=convert_bigram(df['Біграма'][l])
+                    a=congruence(x1-x2, y1-y2, m**2)
+                    if a is None: 
+                        continue
+                    elif isinstance(a, list) is True: 
+                        for el in a:
+                            if el==0: 
+                                continue
+                            b=(y1-el*x1)%(m**2)
+                            if (el, b) not in keys: 
+                                keys.append((el, b))
+                                res=[]
+                                for t in ciphertext:
+                                    res.append((inverted(el, m**2)*(t-b))%(m**2))
+                                text=deconvert_text(res)
+                                if check_text(text) is True:
+                                    result.write(f'({el}, {b})\n'+deconvert_text(res))
+                                    triger=True
+                                    break
+                            if triger is True:
+                                break
+                    else:
+                        if a==0: 
+                            continue
+                        b=(y1-a*x1)%(m**2)
+                        if (a, b) not in keys: 
+                            keys.append((a, b))
+                            res=[]
+                            for t in ciphertext:
+                                res.append((inverted(a, m**2)*(t-b))%(m**2))
+                            text=deconvert_text(res)
+                            if check_text(text) is True: 
+                                result.write(f'({a}, {b})\n'+ deconvert_text(res))
+                                triger=True
+                                break
+                        
+    result.close()
+    file=open('result.txt', 'r')
+    for line in file:
+        print(line)
+    file.close()
+    
+if __name__=='__main__':
+    
+    file=open('09.txt', 'r', encoding='UTF-8')
+    ciphertext=cleaning(''.join(line for line in file)).replace(' ', '')
+    bigrams=bigrams_not_intersect(ciphertext)
+    
+    freqs=[]
+    for i in bigrams:
+        freqs.append(frequency(i, len(ciphertext)/2, ciphertext))  
+       
+    df=pd.DataFrame({'Біграма' :[i for i in bigrams_not_intersect(ciphertext)], 
+                     'Частота': [j for j in freqs]})
+    df=df.sort_values(by='Частота', ascending = False, ignore_index=True)
+    dfr=pd.DataFrame({'Біграма': ['ст', 'но', 'то', 'на', 'ен']})
+    
+    alph='абвгдежзийклмнопрстуфхцчшщьыэюя'
+    m=len(alph) 
+    ciphertext=convert_text(ciphertext)  
+    affin_bigramms()
 
     
     
