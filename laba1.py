@@ -144,7 +144,7 @@ if __name__=='__main__':
     print('Надлишковість російської мови R(H_30) = ', 1-H_30/H_0)
     
     ########################################################
-    #лучше запускать tables_with_frequencies_lab1.ipynb
+    #tables_with_frequencies_lab1.ipynb
     
     print('ГАРНІ ТАБЛИЦІ')
     dff=pd.read_csv('frequency_cross_bigramms.csv', delimiter=',', encoding='UTF-8')
