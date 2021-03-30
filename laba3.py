@@ -112,8 +112,6 @@ def affin_bigramms():
                                     result.write(f'({el}, {b})\n'+deconvert_text(res))
                                     triger=True
                                     break
-                            if triger is True:
-                                break
                     else:
                         if a==0: 
                             continue
