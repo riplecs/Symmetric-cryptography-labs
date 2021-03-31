@@ -78,8 +78,21 @@ def check_text(t):
         return True
     else:
         return False 
-def affin_bigramms():
-    result=open('result.txt', 'w')
+    
+def decipher(text, x, y):
+    result=[]
+    for t in text:
+        result.append((inverted(x, m**2)*(t-y)%m**2))
+    return deconvert_text(result)
+
+def frequencies(mas):
+    res=[]
+    for i in mas:
+        res.append(frequency(i, len(ciphertext)/2, ciphertext))  
+    return res
+
+def affin_bigramms(namefile):
+    result=open(f'{namefile}.txt', 'w')
     keys=[]
     triger=False
     for i in range(0, 5):
@@ -104,12 +117,9 @@ def affin_bigramms():
                             b=(y1-el*x1)%(m**2)
                             if (el, b) not in keys: 
                                 keys.append((el, b))
-                                res=[]
-                                for t in ciphertext:
-                                    res.append((inverted(el, m**2)*(t-b))%(m**2))
-                                text=deconvert_text(res)
+                                text=decipher(ciphertext, el, b)
                                 if check_text(text) is True:
-                                    result.write(f'({el}, {b})\n'+deconvert_text(res))
+                                    result.write(f'({el}, {b})\n'+text)
                                     triger=True
                                     break
                     else:
@@ -118,12 +128,9 @@ def affin_bigramms():
                         b=(y1-a*x1)%(m**2)
                         if (a, b) not in keys: 
                             keys.append((a, b))
-                            res=[]
-                            for t in ciphertext:
-                                res.append((inverted(a, m**2)*(t-b))%(m**2))
-                            text=deconvert_text(res)
+                            text=decipher(ciphertext, a, b)
                             if check_text(text) is True: 
-                                result.write(f'({a}, {b})\n'+ deconvert_text(res))
+                                result.write(f'({a}, {b})\n'+ text)
                                 triger=True
                                 break
                         
@@ -138,10 +145,7 @@ if __name__=='__main__':
     file=open('09.txt', 'r', encoding='UTF-8')
     ciphertext=cleaning(''.join(line for line in file)).replace(' ', '')
     bigrams=bigrams_not_intersect(ciphertext)
-    
-    freqs=[]
-    for i in bigrams:
-        freqs.append(frequency(i, len(ciphertext)/2, ciphertext))  
+    freqs=frequencies(bigrams)
        
     df=pd.DataFrame({'Біграма' :[i for i in bigrams_not_intersect(ciphertext)], 
                      'Частота': [j for j in freqs]})
@@ -151,7 +155,7 @@ if __name__=='__main__':
     alph='абвгдежзийклмнопрстуфхцчшщьыэюя'
     m=len(alph) 
     ciphertext=convert_text(ciphertext)  
-    affin_bigramms()
+    affin_bigramms('result')
 
     
     
