@@ -8,6 +8,7 @@ Created on Thu Feb 18 08:34:14 2021
 
 from laba1 import bigrams_not_intersect, frequency, cleaning
 import pandas as pd
+import matplotlib.pyplot as plt
 
 def Evklid(a, n):
     if n==0: return a, 1, 0
@@ -54,27 +55,9 @@ def deconvert_text(mas):
         res.append(deconvert_bigram(mas[i]))
     return ''.join(i for i in res)
 
-
-'''
-forbiden=['аь', 'оь', 'уь', 'кь', 'хь', 'оы', 'еь', 'ьы']
-
-def check_text(t):
-    c=0
-    for i in forbiden:
-        if t.find(i)==-1:
-            c=c+1
-    if c==len(forbiden): 
-        if t.count('ф')/len(t)<0.0025:
-            return True
-        else:
-            return False 
-    else:
-        return False
-'''
-
 def check_text(t):
     n=len(t)
-    if t.count('ф')/n<0.004:
+    if frequency('ф', n, t)<0.003 and frequency('щ', n, t)<0.005:
         return True
     else:
         return False 
@@ -91,9 +74,13 @@ def frequencies(mas):
         res.append(frequency(i, len(ciphertext)/2, ciphertext))  
     return res
 
+def print_bigrams(x, y, z, w):
+    print(f'{deconvert_bigram(x)}->{deconvert_bigram(y)}')
+    print(f'{deconvert_bigram(z)}->{deconvert_bigram(w)}')
+    
 def affin_bigramms(namefile):
     result=open(f'{namefile}.txt', 'w')
-    keys=[]
+    keys, f, ch = [], [], []
     triger=False
     for i in range(0, 5):
         for j in range(0, 5):
@@ -118,6 +105,8 @@ def affin_bigramms(namefile):
                             if (el, b) not in keys: 
                                 keys.append((el, b))
                                 text=decipher(ciphertext, el, b)
+                                f.append(frequency('ф', len(text), text))
+                                ch.append(frequency('щ', len(text), text))
                                 if check_text(text) is True:
                                     result.write(f'({el}, {b})\n'+text)
                                     triger=True
@@ -129,6 +118,8 @@ def affin_bigramms(namefile):
                         if (a, b) not in keys: 
                             keys.append((a, b))
                             text=decipher(ciphertext, a, b)
+                            f.append(frequency('ф', len(text), text))
+                            ch.append(frequency('щ', len(text), text))
                             if check_text(text) is True: 
                                 result.write(f'({a}, {b})\n'+ text)
                                 triger=True
@@ -139,6 +130,12 @@ def affin_bigramms(namefile):
     for line in file:
         print(line)
     file.close()
+    X=[i for i in range((max(len(f), len(ch))))]
+    Y=[i for i in f]
+    Z=[i for i in ch]
+    fig, ax = plt.subplots()
+    ax.plot(X, Y, Z)
+    plt.show()
     
 if __name__=='__main__':
     
@@ -150,6 +147,7 @@ if __name__=='__main__':
     df=pd.DataFrame({'Біграма' :[i for i in bigrams_not_intersect(ciphertext)], 
                      'Частота': [j for j in freqs]})
     df=df.sort_values(by='Частота', ascending = False, ignore_index=True)
+    #print(df.set_index('Біграма')[:5])
     dfr=pd.DataFrame({'Біграма': ['ст', 'но', 'то', 'на', 'ен']})
     
     alph='абвгдежзийклмнопрстуфхцчшщьыэюя'
