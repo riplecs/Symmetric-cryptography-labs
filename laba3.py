@@ -123,8 +123,7 @@ def affin_bigramms(namefile):
                             if check_text(text) is True: 
                                 result.write(f'({a}, {b})\n'+ text)
                                 triger=True
-                                break
-                        
+                                break       
     result.close()
     file=open('result.txt', 'r')
     for line in file:
