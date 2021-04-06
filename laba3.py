@@ -11,9 +11,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def Evklid(a, n):
-    if n==0: return a, 1, 0
-    else: d, u, v = inverted(n, a%n)
-    return  d, v, u -int(a/n)*v
+    u0, u1 = 1, 0
+    v0, v1 = 0, 1
+    while n!=0:
+        q=a//n
+        a, n = n, a%n
+        u0, u1= u1, u0-q*u1
+        v0, v1 = v1, v0-q*v1
+    return (a, u0, v0)
 
 def inverted(a, n):
     r=Evklid(a, n)
@@ -95,35 +100,22 @@ def affin_bigramms(namefile):
                     x2=convert_bigram(dfr['Біграма'][k])
                     y2=convert_bigram(df['Біграма'][l])
                     a=congruence(x1-x2, y1-y2, m**2)
-                    if a is None: 
-                        continue
-                    elif isinstance(a, list) is True: 
-                        for el in a:
-                            if el==0: 
-                                continue
-                            b=(y1-el*x1)%(m**2)
-                            if (el, b) not in keys: 
-                                keys.append((el, b))
-                                text=decipher(ciphertext, el, b)
-                                f.append(frequency('ф', len(text), text))
-                                ch.append(frequency('щ', len(text), text))
-                                if check_text(text) is True:
-                                    result.write(f'({el}, {b})\n'+text)
-                                    triger=True
-                                    break
-                    else:
-                        if a==0: 
-                            continue
-                        b=(y1-a*x1)%(m**2)
-                        if (a, b) not in keys: 
-                            keys.append((a, b))
-                            text=decipher(ciphertext, a, b)
+                    if a is None: continue
+                    if isinstance(a, list) is False: 
+                        a=list([a])
+                    for el in a:
+                        if el==0:  continue
+                        b=(y1-el*x1)%(m**2)
+                        if (el, b) not in keys: 
+                            keys.append((el, b))
+                            text=decipher(ciphertext, el, b)
                             f.append(frequency('ф', len(text), text))
                             ch.append(frequency('щ', len(text), text))
-                            if check_text(text) is True: 
-                                result.write(f'({a}, {b})\n'+ text)
+                            if check_text(text) is True:
+                                print_bigrams(x1, y1, x2, y2)
+                                result.write(f'({el}, {b})\n'+text)
                                 triger=True
-                                break       
+                                break    
     result.close()
     file=open('result.txt', 'r')
     for line in file:
