@@ -68,9 +68,10 @@ def check_text(t):
         return False 
     
 def decipher(text, x, y):
+    inv=inverted(x, m**2)
     result=[]
     for t in text:
-        result.append((inverted(x, m**2)*(t-y)%m**2))
+        result.append(inv*(t-y)%m**2))
     return deconvert_text(result)
 
 def frequencies(mas):
