@@ -11,9 +11,9 @@ from sympy import symbols, solve, Eq, sqrt
 f=open('z.txt', 'r')
 z=f.read()
 
-L1=(0, 2)
-L2=(0, 1, 3, 4)
-L3=(0, 3)
+L1=(0, 3)
+L2=(0, 1, 2, 6)
+L3=(0, 1, 2, 5)
 
 def lfsr(state, taps, n):
     it=1
@@ -33,37 +33,35 @@ def lfsr(state, taps, n):
     yield res
 
 def Giffi(x0, y0, s0):
+    res=''
     for state in lfsr(x0, L1, math.inf):
-        x=int(state, base=2)
+        x=state
     for state in lfsr(y0, L2, math.inf):
-        y=int(state, base=2)
+        y=state
     for state in lfsr(s0, L3, math.inf):
-        s=int(state, base=2)
-    z=(x&s)^(y& (~s))
-    return bin(z)
+        s=state
+    for i in range(min(len(x), len(y), len(s))):
+        res=res+(x[i] if s[i]=='1' else y[i])
+    return res[:len(z)]
 
 
 p1=0.25
 p2=0.5
 t_λ=2.326347874
-#β=1/2**25
-t_β=5.41998
+x, y = symbols('x, y')
 #C=N*p1+t_λ*math.sqrt(N*p1*(1-p1))
 #t_β=(N*p2-C)/math.sqrt(N*p2*(1-p2))
 
 
-x, y = symbols('x, y')
+t_β=5.419983175
 eq1=Eq(x*p1+t_λ*sqrt(x*p1*(1-p1))-y, 0.001)
 eq2=Eq((x*p2-y)/sqrt(x*p2*(1-p2))-t_β, 0.001)
 N1, C1 = solve([eq1, eq2], [x, y])[1]
-print(N1, C1)
 
-β=1/2**26
-t_β=5.54259
+t_β=5.542594058
 eq1=Eq(x*p1+t_λ*sqrt(x*p1*(1-p1))-y, 0.001)
 eq2=Eq((x*p2-y)/sqrt(x*p2*(1-p2))-t_β, 0.001)
 N2, C2 = solve([eq1, eq2], [x, y])[1]
-print(N2, C2)
 
 
 def R(vec, c):
@@ -78,42 +76,31 @@ def R(vec, c):
 def bin_array(N):
     return (np.arange(1<<N)[:, None] >> np.arange(N)[::-1]) & 0b1
 
-v=10*'0'+'1'
-N=int(N1)
-for state in lfsr(v, L1, math.inf):
-    state0=state
-check=R(state0, math.floor(C1))
-candidates1=[]
-for i in range(len(state0)-N):
-    check=R(state0[i:N+i], math.floor(C1))
-    if check is True:
-        candidates1.append(state0[i:N+i][:11])
-print(candidates1)
+def find_states(n, N, C, L):
+    v=(n-1)*'0'+'1'
+    for state in lfsr(v, L, math.inf):
+        state0=state
+    check=R(state0, C)
+    candidates=[]
+    for i in range(len(state0)-int(N)):
+        check=R(state0[i:int(N)+i], C)
+        if check is True:
+            candidates.append(state0[i:int(N)+i][:n])
+    return candidates
 
-v=8*'0'+'1'
-N=int(N2)
-for state in lfsr(v, L2, math.inf):
-    state0=state
-check=R(state0, math.floor(C2))
-candidates2=[]
-for i in range(len(state0)-N):
-    check=R(state0[i:N+i], math.floor(C2))
-    if check is True:
-        candidates2.append(state0[i:N+i][:9])
-print(candidates2)
+candidates1=find_states(25, N1, C1, L1)
+candidates2=find_states(26, N2, C2, L2)
 
-vectors = bin_array(10)
-
-check=R(Giffi(candidates1[1], candidates2[0], 9*'0'+'1')[2:], 1)
-i=0
-for v in vectors:
-    v=str(v)
-    G=Giffi(candidates1[1], candidates2[0], v[1:len(v)-1:2])
-    print(f'{i}) ', G[:20])
-    i+=1
-    check=R(G[2:], 1)
-    if check is True:
-        print(v[1:len(v)-1:2])
-        print('---------------------------------------')
-
+def find_l3(n, l1, l2):
+    vectors = bin_array(n)
+    for i in l1:
+        for j in l2:
+            for v in vectors[1:]:
+                v=str(v)
+                G=Giffi(i, j, v[1:len(v)-1:2])
+                check=R(G[:len(z)], 1)
+                if check is True:
+                    return i, j, v[1:len(v)-1:2]
+                
+print(find_l3(27, candidates1, candidates2))
 
