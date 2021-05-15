@@ -32,7 +32,7 @@ def lfsr(state, taps, n):
             break
     yield res
 
-def Giffi(x0, y0, s0):
+def Geffe(x0, y0, s0):
     res=''
     for state in lfsr(x0, L1, math.inf):
         x=state
@@ -97,7 +97,7 @@ def find_l3(n, l1, l2):
         for j in l2:
             for v in vectors[1:]:
                 v=str(v)
-                G=Giffi(i, j, v[1:len(v)-1:2])
+                G=Geffe(i, j, v[1:len(v)-1:2])
                 check=R(G[:len(z)], 1)
                 if check is True:
                     return i, j, v[1:len(v)-1:2]
