@@ -3,3 +3,5 @@ laba1 - program for calculating letter and bigram frequencies in text, calculati
 laba 2- cryptanalysis of Vigenère on 'вар9.txt' 
 
 laba 3 - cryptanalysis of affine substitution of bigrams on '09.txt'
+
+laba 4 - correlation cryptanalysis of Geffe generator 
