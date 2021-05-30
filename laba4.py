@@ -40,17 +40,17 @@ def lfsr(state, taps, n):
     return res
 
 
-def Geffe(x0, y0, s0):
+def Geffe(x0, y0, s0, k1, k2, k3):
     res=[]
-    x=lfsr(x0, L1, N1)
-    y=lfsr(y0, L2, N2)
-    s=lfsr(s0, L3, N3)
-    for i in range(min(N1, N2, N3)):
+    x=lfsr(x0, L1, k1)
+    y=lfsr(y0, L2, k2)
+    s=lfsr(s0, L3, k3)
+    for i in range(min(k1, k2, k3)):
         res=res+[x[i] if s[i]==1 else y[i]]
-    return res[:len(z)]
+    return res
 
 
-def R(vec, c):
+def Statistic_R(vec, c):
     res=0
     for i in range(len(vec)):
         res+=(vec[i]+z[i])%2
@@ -66,33 +66,37 @@ def find_states(n, N, C, L):
     candidates=[]
     for i in range(len(state0)-N):
         s=state0[i:N+i]
-        check=R(s, C)
-        if check is True:
+        if Statistic_R(s, C) is True:
             candidates.append(s[:n])
     return candidates
 
 
-def Next_Vector(vect):
+def Prev_Vector(vect):
     n=len(vect)
-    if vect[-1]==0:
-        return vect[:n-1]+[1]
+    if vect[-1]==1:
+        return vect[:n-1]+[0]
     else:
         i, k=-1, 0
-        while vect[i]!=0:
+        while vect[i]!=1:
             i-=1
             k+=1
-        return vect[:n-k-1]+[1]+k*[0]
+        return vect[:n-k-1]+[0]+[1]*k
     
     
 def find_l3(n, l1, l2):
-    v=[0]*(n-1)+[1]
+    v=[1]*n
+    m=int(np.mean([i.count(1) for i in l1]))
     while True:
+        if v.count(1)<m-1:
+            v=Prev_Vector(v)
+            continue
         for i in l1:
             for j in l2:
-                if R(Geffe(i, j, v), 0) is True:
-                    return i, j, v
-                    break
-        v=Next_Vector(v)
+                if Statistic_R(Geffe(i, j, v, n1, n2, n3), 0) is True:
+                    if Statistic_R(Geffe(i, j, v, N1, N2, N3), 0) is True:
+                        return i, j, v
+                        break
+        v=Prev_Vector(v)
         
         
 def calculation(t_β):
