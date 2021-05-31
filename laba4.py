@@ -71,32 +71,28 @@ def find_states(n, N, C, L):
     return candidates
 
 
-def Prev_Vector(vect):
+def Next_Vector(vect):
     n=len(vect)
-    if vect[-1]==1:
-        return vect[:n-1]+[0]
+    if vect[-1]==0:
+        return vect[:n-1]+[1]
     else:
         i, k=-1, 0
-        while vect[i]!=1:
+        while vect[i]!=0:
             i-=1
             k+=1
-        return vect[:n-k-1]+[0]+[1]*k
+        return vect[:n-k-1]+[1]+k*[0]
     
     
 def find_l3(n, l1, l2):
-    v=[1]*n
-    m=int(np.mean([i.count(1) for i in l1]))
+    v=[0]*(n-1)+[1]
     while True:
-        if v.count(1)<m-1:
-            v=Prev_Vector(v)
-            continue
         for i in l1:
             for j in l2:
                 if Statistic_R(Geffe(i, j, v, n1, n2, n3), 0) is True:
                     if Statistic_R(Geffe(i, j, v, N1, N2, N3), 0) is True:
                         return i, j, v
                         break
-        v=Prev_Vector(v)
+        v=Next_Vector(v)
         
         
 def calculation(t_β):
