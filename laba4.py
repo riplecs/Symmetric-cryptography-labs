@@ -6,7 +6,7 @@ Created on Tue Apr  6 11:38:02 2021
 """
 
 from sympy import symbols, solve, Eq, sqrt
-import time 
+import numpy as np
 
 p1=0.25
 p2=0.5
@@ -111,8 +111,8 @@ N2, C2 = (int(i) for i in calculation(t_β2))
 N3, C3 = (int(i) for i in calculation(t_β3))
 
 
-start_time = time.time()
+
 candidates1=find_states(n1, N1, C1, L1)
 candidates2=find_states(n2, N2, C2, L2)
 print(find_l3(n3, candidates1, candidates2))
-print("--- %s seconds ---" % (time.time() - start_time))
+
