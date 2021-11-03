@@ -37,7 +37,7 @@ def Vigenere(r, text):
         res.append(numerate(i))
     for j in res:
         k = 0
-        while k<len(j):
+        while k < len(j):
             j[k] = (j[k]+numerate(r)[k])%m
             k += 1
     fin = []
@@ -109,7 +109,7 @@ def find_key_1(text):
     for i in range(len(text)):
         txt = ''.join(text[i])
         g = 0
-        while g<m:
+        while g < m:
             el = 0
             for t in range(0, m):
                 l = convert([(t+g)%m])
@@ -140,7 +140,7 @@ def deVigenere(r, text):
         res.append(numerate(i))
     for j in res:
         k = 0
-        while k<len(j):
+        while k < len(j):
             j[k] = (j[k] - (numerate(r))[k])%m
             k += 1
     fin = []
